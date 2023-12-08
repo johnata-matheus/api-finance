@@ -2,7 +2,6 @@ package br.com.finance.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,8 @@ public class ExpenseService {
 
   public List<ExpenseResponseDto> getAllExpenses(){
     List<Expense> expenses = expenseRepository.findAll();
-    List<ExpenseResponseDto> expenseDto = expenses.stream().map(expense -> modelMapper.map(expense, ExpenseResponseDto.class)).collect(Collectors.toList());
-    return expenseDto;
+    List<ExpenseResponseDto> expensesDto = expenses.stream().map(expense -> modelMapper.map(expense, ExpenseResponseDto.class)).toList();
+    return expensesDto;
   }
 
   public ResponseEntity<ExpenseResponseDto> findExpenseById(Long id){
