@@ -2,15 +2,35 @@ version: "3.8"
 
 services:
   mysql:
-    image: mysql:latest
     container_name: mysql-finance
-    restart: always
+    image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
-      - 3307:3306
+      - "3307:3306"
     volumes:
       - mysql_finance:/var/lib/mysql
+    networks:
+      - api
+
+  app:
+    container_name: api-finance
+    image: api-finance
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    networks:
+      - api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/finance
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    restart: on-failure
 
 volumes:
   mysql_finance:
+
+networks:
+  api:
+   
