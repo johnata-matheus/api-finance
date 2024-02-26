@@ -15,7 +15,7 @@ services:
 
   app:
     container_name: api-finance
-    image: api-finance
+    image: matheusabd/api-finance
     ports:
       - 8080:8080
     depends_on:
