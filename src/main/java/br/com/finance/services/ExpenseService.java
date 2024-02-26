@@ -1,15 +1,12 @@
 package br.com.finance.services;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import br.com.finance.dtos.request.ExpenseRequestDto;
-import br.com.finance.dtos.response.ExpenseResponseDto;
 import br.com.finance.models.Expense;
 import br.com.finance.repositories.ExpenseRepository;
 
@@ -19,47 +16,40 @@ public class ExpenseService {
   @Autowired
   private ExpenseRepository expenseRepository;
 
-  @Autowired
-  ModelMapper modelMapper;
-
-  public List<ExpenseResponseDto> getAllExpenses(){
-    List<Expense> expenses = expenseRepository.findAll();
-    List<ExpenseResponseDto> expensesDto = expenses.stream().map(expense -> modelMapper.map(expense, ExpenseResponseDto.class)).toList();
-    return expensesDto;
+  public List<Expense> getAllExpenses(){
+    List<Expense> expenses = this.expenseRepository.findAll();
+    
+    return expenses;
   }
 
-  public ResponseEntity<ExpenseResponseDto> findExpenseById(Long id){
-    Optional<Expense> expenseId = expenseRepository.findById(id);
-    if(expenseId.isPresent()){
-      Expense expense = expenseId.get();
-      ExpenseResponseDto expenseDto = modelMapper.map(expense, ExpenseResponseDto.class);
-      return ResponseEntity.ok().body(expenseDto);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+  public Expense findExpenseById(Long id){
+    return this.expenseRepository.findById(id).orElseThrow(() -> new NoSuchElementException("id da despesa não encontrado!"));
   }
 
-  public Expense createExpense(ExpenseRequestDto expenseRequestDto){
-    Expense expense = modelMapper.map(expenseRequestDto, Expense.class);
-    return expenseRepository.save(expense);
+  public Expense createExpense(Expense expense){
+    return this.expenseRepository.save(expense);
   }
 
-  public ResponseEntity<Expense> updateExpenseByid(Long id, ExpenseRequestDto expenseRequestDto){
-    Optional<Expense> expenseId = expenseRepository.findById(id);
+  public Expense updateExpenseByid(Long id, Expense expense){
+    Optional<Expense> expenseId = this.expenseRepository.findById(id);
     if(expenseId.isPresent()){
       Expense expenseToUpdate = expenseId.get();
-      modelMapper.map(expenseRequestDto, expenseToUpdate);
-      Expense updateExpense = expenseRepository.save(expenseToUpdate);
-      return ResponseEntity.ok().body(updateExpense);
-    } else {
-      return ResponseEntity.notFound().build();
-    }
+
+      expenseToUpdate.setDescription(expense.getDescription());
+      expenseToUpdate.setCategory(expense.getCategory());
+      expenseToUpdate.setValue(expense.getValue());
+      expenseToUpdate.setDate(expense.getDate());
+      expenseToUpdate.setUser(expense.getUser());
+
+      return this.expenseRepository.save(expenseToUpdate);
+    } 
+      throw new IllegalArgumentException("Despesa não encontrada com id: " + id);
+   
   }
 
-  public ResponseEntity<Object> deleteExpenseById(Long id){
-    return expenseRepository.findById(id).map(expenseToDelete -> {
-      expenseRepository.deleteById(id);
-      return ResponseEntity.noContent().build();
-    }).orElse(ResponseEntity.notFound().build());
+  public void deleteExpenseById(Long id){
+      this.expenseRepository.findById(id).ifPresent(expenseToDelete -> {
+        this.expenseRepository.deleteById(id);
+      });
   }
 }
