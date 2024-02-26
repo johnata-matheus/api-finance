@@ -3,16 +3,15 @@ package br.com.finance.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.finance.dtos.request.UserRequestDto;
@@ -23,33 +22,36 @@ import br.com.finance.services.UserService;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
   @Autowired
   private UserService userService;
 
   @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public List<UserResponseDto> getAllUsers(){
-    List<UserResponseDto> users = userService.getAllUsers();
-    return users;
+  public ResponseEntity<List<User>> getAllUsers() {
+    List<User> users = userService.getAllUsers();
+
+    return ResponseEntity.ok().body(users);
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<UserResponseDto> getUserById(@PathVariable(value = "id") Long id){
-    return userService.findUserById(id);
-  }
+  public ResponseEntity<UserResponseDto> getUserById(@PathVariable(value = "id") Long id) {
+    var userId = this.userService.findUserById(id);
 
-  @PostMapping
-  public User createUser(@RequestBody UserRequestDto userRequestDto){
-    return userService.createUser(userRequestDto);
+    return ResponseEntity.ok().body(new UserResponseDto(userId));
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<User> updateUser(@PathVariable(value = "id") Long id, @RequestBody UserRequestDto userRequestDto){
-    return userService.updateUserByid(id, userRequestDto);
+  public ResponseEntity<UserResponseDto> updateUser(@PathVariable(value = "id") Long id, @RequestBody UserRequestDto userRequestDto) {
+    var user = this.userService.updateUserByid(id, userRequestDto);
+
+    return ResponseEntity.ok().body(new UserResponseDto(user));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") Long id){
-    return userService.deleteUserById(id);
+  public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") Long id) {
+    this.userService.deleteUserById(id);
+    
+    return ResponseEntity.noContent().build();
   }
+
 }

@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.finance.dtos.request.ExpenseRequestDto;
 import br.com.finance.dtos.response.ExpenseResponseDto;
 import br.com.finance.models.Expense;
 import br.com.finance.services.ExpenseService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/expense")
@@ -26,31 +26,41 @@ public class ExpenseController {
 
   @Autowired
   private ExpenseService expenseService;
-
+  
   @GetMapping
-  @ResponseStatus(HttpStatus.OK)
-  public List<ExpenseResponseDto> getAllExpenses(){
-    List<ExpenseResponseDto> expenses = expenseService.getAllExpenses();
-    return expenses;
+  public ResponseEntity<List<ExpenseResponseDto>> getAllExpenses(){
+    List<Expense> expenses = this.expenseService.getAllExpenses();
+    List<ExpenseResponseDto> expensesDto = expenses.stream().map(ExpenseResponseDto::new).toList();
+   
+    return ResponseEntity.ok().body(expensesDto);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<ExpenseResponseDto> getExpenseById(@PathVariable(value = "id") Long id){
-    return expenseService.findExpenseById(id);
-  }
+      var expense = this.expenseService.findExpenseById(id);
+      var expenseResponseDto = new ExpenseResponseDto(expense);
 
+      return ResponseEntity.ok().body(expenseResponseDto);
+  }
+ 
   @PostMapping
-  public Expense createExpense(@RequestBody ExpenseRequestDto expenseRequestDto){
-    return expenseService.createExpense(expenseRequestDto);
+  public ResponseEntity<ExpenseResponseDto> createExpense(@RequestBody @Valid ExpenseRequestDto expenseRequestDto){
+    var expense = this.expenseService.createExpense(expenseRequestDto.toExpense());
+    
+    return ResponseEntity.status(HttpStatus.CREATED).body(new ExpenseResponseDto(expense));
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<Expense> updateExpense(@PathVariable(value = "id") Long id, @RequestBody ExpenseRequestDto expenseRequestDto){
-    return expenseService.updateExpenseByid(id, expenseRequestDto);
+  public ResponseEntity<ExpenseResponseDto> updateExpense(@PathVariable(value = "id") Long id, @RequestBody ExpenseRequestDto expenseRequestDto){
+    var expense = this.expenseService.updateExpenseByid(id, expenseRequestDto.toExpense());
+
+    return ResponseEntity.ok().body(new ExpenseResponseDto(expense));
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Object> deleteExpense(@PathVariable(value = "id") Long id){
-    return expenseService.deleteExpenseById(id);
+    this.expenseService.deleteExpenseById(id);
+
+    return ResponseEntity.noContent().build();
   }
 }
