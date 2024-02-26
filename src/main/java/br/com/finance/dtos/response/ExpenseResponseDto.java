@@ -2,16 +2,12 @@ package br.com.finance.dtos.response;
 
 import java.time.LocalDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import br.com.finance.models.Expense;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class ExpenseResponseDto {
-  private Long id;
-  private String description;
-  private int value;
-  private LocalDate date;
+public record ExpenseResponseDto(Long id,String description,String category,double value,LocalDate date, Long id_user) {
+
+  public ExpenseResponseDto(Expense expense){
+     this(expense.getId(),expense.getDescription(),expense.getCategory(),expense.getValue(),expense.getDate(),expense.getUser().getId());
+  } 
+
 }

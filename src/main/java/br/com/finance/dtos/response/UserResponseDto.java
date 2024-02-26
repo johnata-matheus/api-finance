@@ -1,14 +1,14 @@
 package br.com.finance.dtos.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class UserResponseDto {
-  private Long id;
-  private String email;
-  private String name;
+import br.com.finance.models.Expense;
+import br.com.finance.models.User;
+
+public record UserResponseDto(Long id, String login, List<Expense> expenses) {
+
+  public UserResponseDto(User user){
+    this(user.getId(), user.getLogin(), user.getExpenses());
+  }
+
 }
