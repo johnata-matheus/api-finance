@@ -6,6 +6,7 @@ services:
     image: mysql:latest
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: finance
     ports:
       - "3307:3306"
     volumes:
@@ -15,19 +16,19 @@ services:
 
   app:
     container_name: api-finance
-    image: matheusabd/api-finance
+    image: testando
     ports:
-      - 8080:8080
-    depends_on:
-      - mysql
+      - "8080:8080"
     networks:
       - api
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/finance
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/finance?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - mysql
     restart: on-failure
-
+      
 volumes:
   mysql_finance:
 
