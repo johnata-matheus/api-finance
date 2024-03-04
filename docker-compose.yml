@@ -16,18 +16,15 @@ services:
 
   app:
     container_name: api-finance
-    image: testando
+    image: matheusabd/finance-api
     ports:
       - "8080:8080"
     networks:
       - api
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/finance?createDatabaseIfNotExist=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       - mysql
-    restart: on-failure
       
 volumes:
   mysql_finance:
