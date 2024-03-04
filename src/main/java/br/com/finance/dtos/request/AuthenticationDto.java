@@ -1,5 +1,5 @@
 package br.com.finance.dtos.request;
 
-public record AuthenticationDto(String login, String password) {
+public record AuthenticationDto(String email, String password) {
   
 }

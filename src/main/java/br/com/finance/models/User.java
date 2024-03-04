@@ -37,8 +37,11 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(nullable = false)
+  private String name;
+
   @Column(nullable = false, unique = true)
-  private String login;
+  private String email;
   
   @Column(nullable = false, updatable = false)
   private String password;
@@ -61,8 +64,9 @@ public class User implements UserDetails {
   @JsonIgnore
   private List<Revenue> revenues;
 
-  public User(String login, String password, Role role){
-    this.login = login;
+  public User(String name, String email, String password, Role role){
+    this.name = name;
+    this.email = email;
     this.password = password;
     this.role = role;
   }
@@ -78,7 +82,7 @@ public class User implements UserDetails {
 
   @Override
   public String getUsername() {
-    return login;
+    return name;
   }
 
   @Override

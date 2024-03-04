@@ -8,5 +8,5 @@ import br.com.finance.models.User;
 
 @Repository
 public interface AuthRepository extends JpaRepository<User, Long> {
-  UserDetails findByLogin(String login);
+  UserDetails findByEmail(String email);
 }

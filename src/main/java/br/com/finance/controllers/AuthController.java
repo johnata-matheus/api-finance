@@ -34,7 +34,7 @@ public class AuthController {
 
   @PostMapping("/login")
   public ResponseEntity<LoginReponseDto> login(@RequestBody AuthenticationDto authenticationDto) {
-    var token = this.authService.login(authenticationDto.login(), authenticationDto.password());
+    var token = this.authService.login(authenticationDto.email(), authenticationDto.password());
 
     return ResponseEntity.ok().body(new LoginReponseDto(token));
   }
