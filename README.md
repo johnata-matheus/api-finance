@@ -9,7 +9,7 @@ Este projeto se trata de uma API de finanças. A mesma foi construída utilizand
 
 ## Requisitos
 
-Para rodar rodar esse projeto você precisara do Docker.
+Para rodar esse projeto você precisara do Docker.
 
 ## Instalação
 
@@ -19,7 +19,7 @@ Para rodar rodar esse projeto você precisara do Docker.
 git clone https://github.com/johnata-matheus/api-finance.git
 ```
 
-2. startar o projeto:
+2. Na pasta do projeto, starte o projeto:
    
 ```
 docker-compose up -d
