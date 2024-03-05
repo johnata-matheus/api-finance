@@ -3,11 +3,11 @@ package br.com.finance.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.finance.dtos.request.UserRequestDto;
+import br.com.finance.exceptions.UserNotFoundException;
 import br.com.finance.models.User;
 import br.com.finance.repositories.UserRepository;
 
@@ -17,21 +17,12 @@ public class UserService {
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
-  ModelMapper modelMapper;
-
   public List<User> getAllUsers(){
     return userRepository.findAll();
   }
   
   public User findUserById(Long id){
-    Optional<User> userId = userRepository.findById(id);
-    if(userId.isPresent()){
-      var user = userId.get();
-      return user;
-    }
-    
-    throw new IllegalArgumentException("Usuário não encontrado com o id: " + id);
+    return this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
   }
 
   public User updateUserByid(Long id, UserRequestDto userRequestDto){
@@ -39,20 +30,24 @@ public class UserService {
     if(userId.isPresent()){
       User userToUpdate = userId.get();
       
-      userToUpdate.setLogin(userRequestDto.login());
+      userToUpdate.setName(userRequestDto.name());
+      userToUpdate.setEmail(userRequestDto.email());
       userToUpdate.setPassword(userRequestDto.password());
       userToUpdate.setRole(userRequestDto.role());
 
       return this.userRepository.save(userToUpdate);
     } 
 
-    throw new IllegalArgumentException("Usuário não encontrado com o id: " + id);
+    throw new UserNotFoundException();
   }
 
   public void deleteUserById(Long id){
-    this.userRepository.findById(id).ifPresent((userToDelete) -> {
+    Optional<User> userId = this.userRepository.findById(id);
+    if(userId.isPresent()){
       this.userRepository.deleteById(id);
-    });
+    } else {
+      throw new UserNotFoundException();
+    }
   }
   
 }

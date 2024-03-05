@@ -1,12 +1,12 @@
 package br.com.finance.services;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.finance.exceptions.RevenueNotFoundException;
 import br.com.finance.models.Revenue;
 import br.com.finance.repositories.RevenueRepository;
 
@@ -23,7 +23,7 @@ public class RevenueService {
   }
   
   public Revenue findRevenueById(Long id){
-    return this.revenueRepository.findById(id).orElseThrow(() ->  new NoSuchElementException("id da receita não encontrado!"));
+    return this.revenueRepository.findById(id).orElseThrow(() ->  new RevenueNotFoundException());
   }
 
   public Revenue createRevenue(Revenue revenue){
@@ -42,13 +42,16 @@ public class RevenueService {
       return this.revenueRepository.save(revenueToUpdate);
     }
 
-    throw new IllegalArgumentException("Receita não encontrada com id: " + id);
+    throw new RevenueNotFoundException();
   }
 
   public void deleteRevenueById(Long id){
-      this.revenueRepository.findById(id).ifPresent((revenueToDelete) -> {
+      Optional<Revenue> revenueId = this.revenueRepository.findById(id);
+      if(revenueId.isPresent()){
         this.revenueRepository.deleteById(id);
-      });
+      } else {
+        throw new RevenueNotFoundException();
+      }
   }
   
 }

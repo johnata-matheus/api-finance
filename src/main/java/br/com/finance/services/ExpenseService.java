@@ -1,12 +1,12 @@
 package br.com.finance.services;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.com.finance.exceptions.ExpenseNotFoundException;
 import br.com.finance.models.Expense;
 import br.com.finance.repositories.ExpenseRepository;
 
@@ -23,7 +23,7 @@ public class ExpenseService {
   }
 
   public Expense findExpenseById(Long id){
-    return this.expenseRepository.findById(id).orElseThrow(() -> new NoSuchElementException("id da despesa não encontrado!"));
+    return this.expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException());
   }
 
   public Expense createExpense(Expense expense){
@@ -43,13 +43,17 @@ public class ExpenseService {
 
       return this.expenseRepository.save(expenseToUpdate);
     } 
-      throw new IllegalArgumentException("Despesa não encontrada com id: " + id);
-   
+
+    throw new ExpenseNotFoundException();
   }
 
   public void deleteExpenseById(Long id){
-      this.expenseRepository.findById(id).ifPresent(expenseToDelete -> {
+      Optional<Expense> expenseId = this.expenseRepository.findById(id);
+      if(expenseId.isPresent()){
         this.expenseRepository.deleteById(id);
-      });
+      } else {
+        throw new ExpenseNotFoundException();
+      }
   }
+  
 }
