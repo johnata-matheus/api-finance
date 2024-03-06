@@ -2,14 +2,14 @@
 
 ![java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![sring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
-![mysql](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white
-)
+![mysql](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
 Este projeto se trata de uma API de finanças. A mesma foi construída utilizando as tecnologias: Java, Java Spring, Spring MVC, Spring Data JPA, Spring Security, JWT, MYSQL e Docker.
 
 ## Requisitos
 
-Para rodar esse projeto você precisara do Docker.
+Para rodar esse projeto você precisará do Docker.
 
 ## Instalação
 
