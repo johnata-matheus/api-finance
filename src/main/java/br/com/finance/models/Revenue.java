@@ -26,7 +26,7 @@ public class Revenue {
   private String description;
 
   @Column(nullable = false)
-  private int value;
+  private double value;
 
   @Column(nullable = false)
   private LocalDate date;
@@ -35,7 +35,7 @@ public class Revenue {
   @JoinColumn(name = "id_user")
   private User user;
 
-  public Revenue(String description, int value, LocalDate date, User user){
+  public Revenue(String description, double value, LocalDate date, User user){
     this.description = description;
     this.value = value;
     this.date = date;
