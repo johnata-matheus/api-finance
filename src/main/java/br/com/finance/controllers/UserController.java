@@ -18,6 +18,7 @@ import br.com.finance.dtos.request.UserRequestDto;
 import br.com.finance.dtos.response.UserResponseDto;
 import br.com.finance.models.User;
 import br.com.finance.services.UserService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/user")
@@ -41,7 +42,7 @@ public class UserController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<UserResponseDto> updateUser(@PathVariable(value = "id") Long id, @RequestBody UserRequestDto userRequestDto) {
+  public ResponseEntity<UserResponseDto> updateUser(@PathVariable(value = "id") Long id, @RequestBody @Valid UserRequestDto userRequestDto) {
     var user = this.userService.updateUserByid(id, userRequestDto);
 
     return ResponseEntity.ok().body(new UserResponseDto(user));

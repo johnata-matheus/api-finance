@@ -13,10 +13,11 @@ import br.com.finance.dtos.request.AuthenticationDto;
 import br.com.finance.dtos.request.RegisterDto;
 import br.com.finance.dtos.request.ValidateRequetDto;
 import br.com.finance.dtos.response.LoginReponseDto;
+import br.com.finance.dtos.response.UserResponseDto;
 import br.com.finance.dtos.response.ValidateReponseDto;
-import br.com.finance.models.User;
 
 import br.com.finance.services.AuthService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,14 +27,14 @@ public class AuthController {
   private AuthService authService;
 
   @PostMapping("/register")
-  public ResponseEntity<User> register(@RequestBody RegisterDto registerDto) {
+  public ResponseEntity<UserResponseDto> register(@RequestBody @Valid RegisterDto registerDto) {
     var user = this.authService.registerUser(registerDto.toUser());
 
-    return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    return ResponseEntity.status(HttpStatus.CREATED).body(new UserResponseDto(user));
   }
 
   @PostMapping("/login")
-  public ResponseEntity<LoginReponseDto> login(@RequestBody AuthenticationDto authenticationDto) {
+  public ResponseEntity<LoginReponseDto> login(@RequestBody @Valid AuthenticationDto authenticationDto) {
     var token = this.authService.login(authenticationDto.email(), authenticationDto.password());
 
     return ResponseEntity.ok().body(new LoginReponseDto(token));

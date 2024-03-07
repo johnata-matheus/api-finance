@@ -18,6 +18,7 @@ import br.com.finance.dtos.request.RevenueRequestDto;
 import br.com.finance.dtos.response.RevenueResponseDto;
 import br.com.finance.models.Revenue;
 import br.com.finance.services.RevenueService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/revenue")
@@ -42,14 +43,14 @@ public class RevenueController {
   }
 
   @PostMapping
-  public ResponseEntity<RevenueResponseDto> createRevenue(@RequestBody RevenueRequestDto revenueRequestDto){
+  public ResponseEntity<RevenueResponseDto> createRevenue(@RequestBody @Valid RevenueRequestDto revenueRequestDto){
     var revenue = this.revenueService.createRevenue(revenueRequestDto.toRevenue());
 
     return ResponseEntity.status(HttpStatus.CREATED).body(new RevenueResponseDto(revenue));
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<RevenueResponseDto> updateRevenue(@PathVariable(value = "id") Long id, @RequestBody RevenueRequestDto revenueRequestDto){
+  public ResponseEntity<RevenueResponseDto> updateRevenue(@PathVariable(value = "id") Long id, @RequestBody @Valid RevenueRequestDto revenueRequestDto){
     var revenue = this.revenueService.updateRevenueByid(id, revenueRequestDto.toRevenue());
 
     return ResponseEntity.ok().body(new RevenueResponseDto(revenue));
