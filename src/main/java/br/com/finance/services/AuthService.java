@@ -1,5 +1,9 @@
 package br.com.finance.services;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,14 +15,11 @@ import org.springframework.stereotype.Service;
 import br.com.finance.exceptions.UserExistsException;
 import br.com.finance.exceptions.UserNotFoundException;
 import br.com.finance.models.User;
-import br.com.finance.repositories.AuthRepository;
+import br.com.finance.repositories.UserRepository;
 import br.com.finance.secutiry.TokenService;
 
 @Service
 public class AuthService {
-
-  @Autowired
-  private AuthRepository authRepository;
 
   @Autowired
   private AuthenticationManager authenticationManager;
@@ -26,15 +27,21 @@ public class AuthService {
   @Autowired
   private TokenService tokenService;
 
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private EmailService emailService;
+
   public User registerUser(User user) {
-    if (this.authRepository.findByEmail(user.getEmail()) != null) {
+    if (this.userRepository.findByEmail(user.getEmail()) != null) {
       throw new UserExistsException();
     }
 
     String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
     User newUser = new User(user.getName() ,user.getEmail(), encryptedPassword, user.getRole());
 
-    return this.authRepository.save(newUser);
+    return this.userRepository.save(newUser);
   }
 
   public String login(String email, String password){
@@ -58,6 +65,44 @@ public class AuthService {
     }
 
     return isValid;
+  }
+
+  public User forgotPassword(String email) {
+    Optional<User> userEmail = this.userRepository.getEmail(email);
+
+    if(userEmail.isPresent()){
+      User user = userEmail.get();
+      String token = UUID.randomUUID().toString();  
+      LocalDateTime token_expiration = LocalDateTime.now().plusMinutes(60);
+      this.emailService.sendEmail(email, token, user);
+
+      user.setToken(token);
+      user.setToken_expiration(token_expiration);
+
+      return this.userRepository.save(user);
+    } else {
+      throw new UserNotFoundException();
+    }
+    
+  }
+
+  public User resetPassword(String token, String password){
+    Optional<User> userToken = this.userRepository.findByToken(token);
+    
+    if(userToken.isPresent()){
+      User user = userToken.get();
+
+      if(user.getToken().equals(token) && user.getToken_expiration().isAfter(LocalDateTime.now())){
+        String cryptedPassword = new BCryptPasswordEncoder().encode(password);
+        user.setPassword(cryptedPassword);
+        
+        return this.userRepository.save(user); 
+      }
+
+      throw new RuntimeException("Erro na validação do token");
+    }
+    
+    throw new RuntimeException("Token não encontrado");
   }
 
 }

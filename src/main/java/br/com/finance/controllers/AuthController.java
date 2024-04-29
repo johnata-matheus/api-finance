@@ -7,15 +7,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.finance.dtos.request.AuthenticationDto;
+import br.com.finance.dtos.request.ForgotPasswordRequestDto;
 import br.com.finance.dtos.request.RegisterDto;
+import br.com.finance.dtos.request.ResetPasswordRequestDTO;
 import br.com.finance.dtos.request.ValidateRequetDto;
 import br.com.finance.dtos.response.LoginReponseDto;
 import br.com.finance.dtos.response.UserResponseDto;
 import br.com.finance.dtos.response.ValidateReponseDto;
 
+import br.com.finance.models.User;
 import br.com.finance.services.AuthService;
 import jakarta.validation.Valid;
 
@@ -45,6 +49,20 @@ public class AuthController {
     var validateToken = this.authService.validaToken(validateRequetDTO.token());
     
     return ResponseEntity.ok().body(new ValidateReponseDto(validateToken));
+  }
+
+  @PostMapping("/forgot-password")
+  public ResponseEntity<User> sendEmail(@RequestBody ForgotPasswordRequestDto request) {
+      var user = this.authService.forgotPassword(request.email());
+
+      return ResponseEntity.ok().body(user);
+  }
+
+  @PostMapping("/reset-password")
+  public ResponseEntity<User> resetPassword(@RequestParam("token") String token, @RequestBody ResetPasswordRequestDTO request){
+    var reset = this.authService.resetPassword(token, request.newPassword());
+
+    return ResponseEntity.ok().body(reset);
   }
 
 }
