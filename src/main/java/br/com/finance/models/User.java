@@ -43,8 +43,14 @@ public class User implements UserDetails {
   @Column(nullable = false, unique = true)
   private String email;
   
-  @Column(nullable = false, updatable = false)
+  @Column(nullable = false)
   private String password;
+
+  @Column(name = "reset_token")
+  private String token;
+  
+  @Column
+  private LocalDateTime token_expiration;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, updatable = false)
