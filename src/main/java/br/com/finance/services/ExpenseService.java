@@ -22,6 +22,12 @@ public class ExpenseService {
     return expenses;
   }
 
+  public List<Expense> getExpenseByUser(Long id){
+    List<Expense> expenses = this.expenseRepository.findByUserId(id);
+
+    return expenses;
+  }
+
   public Expense findExpenseById(Long id){
     return this.expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException());
   }

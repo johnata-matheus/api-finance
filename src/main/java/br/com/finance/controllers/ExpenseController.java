@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.finance.dtos.request.ExpenseRequestDto;
 import br.com.finance.dtos.response.ExpenseResponseDto;
 import br.com.finance.models.Expense;
+import br.com.finance.models.User;
 import br.com.finance.services.ExpenseService;
 import jakarta.validation.Valid;
 
@@ -27,12 +30,27 @@ public class ExpenseController {
   @Autowired
   private ExpenseService expenseService;
   
-  @GetMapping
-  public ResponseEntity<List<ExpenseResponseDto>> getAllExpenses(){
-    List<Expense> expenses = this.expenseService.getAllExpenses();
-    List<ExpenseResponseDto> expensesDto = expenses.stream().map(ExpenseResponseDto::new).toList();
+  // @GetMapping
+  // public ResponseEntity<List<ExpenseResponseDto>> getAllExpenses(){
+  //   List<Expense> expenses = this.expenseService.getAllExpenses();
+  //   List<ExpenseResponseDto> expensesDto = expenses.stream().map(ExpenseResponseDto::new).toList();
    
-    return ResponseEntity.ok().body(expensesDto);
+  //   return ResponseEntity.ok().body(expensesDto);
+  // }
+
+  @GetMapping
+  public ResponseEntity<List<ExpenseResponseDto>> obterIdUsuarioAutenticado() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      
+    if (authentication != null && authentication.getPrincipal() instanceof User) {
+      User user = (User) authentication.getPrincipal();
+      Long idUsuario = user.getId();
+      List<Expense> expenses = this.expenseService.getExpenseByUser(idUsuario);
+      List<ExpenseResponseDto> listExpenses = expenses.stream().map(ExpenseResponseDto::new).toList();
+      return ResponseEntity.ok().body(listExpenses);
+    } 
+      
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 
   @GetMapping("/{id}")
