@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.finance.dtos.request.UserRequestDto;
@@ -29,10 +30,12 @@ public class UserService {
     Optional<User> userId = this.userRepository.findById(id);
     if(userId.isPresent()){
       User userToUpdate = userId.get();
+
+      String passwordEncrypted = new BCryptPasswordEncoder().encode(userRequestDto.password());
       
       userToUpdate.setName(userRequestDto.name());
       userToUpdate.setEmail(userRequestDto.email());
-      userToUpdate.setPassword(userRequestDto.password());
+      userToUpdate.setPassword(passwordEncrypted);
       userToUpdate.setRole(userRequestDto.role());
 
       return this.userRepository.save(userToUpdate);
