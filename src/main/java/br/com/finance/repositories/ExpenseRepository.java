@@ -9,5 +9,5 @@ import br.com.finance.models.Expense;
 @Repository
 public interface ExpenseRepository extends JpaRepository <Expense, Long>{
   
-  List<Expense> findByUserId(Long idUsuario);
+  List<Expense> findExpensesByUserId(Long idUsuario);
 }
