@@ -39,7 +39,7 @@ public class ExpenseController {
   // }
 
   @GetMapping
-  public ResponseEntity<List<ExpenseResponseDto>> obterIdUsuarioAutenticado() {
+  public ResponseEntity<List<ExpenseResponseDto>> getExpensesByUserAuthenticated() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       
     if (authentication != null && authentication.getPrincipal() instanceof User) {
