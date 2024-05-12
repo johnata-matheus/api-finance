@@ -70,6 +70,10 @@ public class User implements UserDetails {
   @JsonIgnore
   private List<Revenue> revenues;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private List<Account> accounts;
+
   public User(String name, String email, String password, Role role){
     this.name = name;
     this.email = email;

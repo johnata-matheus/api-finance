@@ -23,6 +23,7 @@ public class Expense {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  
   private String description;
 
   @Column(nullable = false)
@@ -34,15 +35,22 @@ public class Expense {
   @Column(nullable = false)
   private LocalDate date;
 
+  @Column(name = "id_user")
+  private Long userId;
+
   @ManyToOne
-  @JoinColumn(name = "id_user")
+  @JoinColumn(name = "id_user", insertable = false, updatable = false)
   private User user;
 
-  public Expense(String description, String category, double value, LocalDate date, User user) {
+  @ManyToOne
+  @JoinColumn(name = "id_account", insertable = false, updatable = false)
+  private Account account;
+
+  public Expense(String description, String category, double value, LocalDate date, Long userId) {
     this.description = description;
     this.category = category;
     this.value = value;
     this.date = date;
-    this.user = user;
+    this.userId = userId;
   }
 }
