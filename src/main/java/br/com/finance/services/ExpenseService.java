@@ -23,7 +23,7 @@ public class ExpenseService {
   }
 
   public List<Expense> getExpenseByUser(Long id){
-    List<Expense> expenses = this.expenseRepository.findByUserId(id);
+    List<Expense> expenses = this.expenseRepository.findExpensesByUserId(id);
 
     return expenses;
   }
