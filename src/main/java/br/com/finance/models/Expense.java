@@ -35,6 +35,12 @@ public class Expense {
   @Column(nullable = false)
   private LocalDate date;
 
+  @Column(nullable = false)
+  private boolean paid_out;
+
+  @Column(name = "id_account")
+  private Long accountId;
+
   @Column(name = "id_user")
   private Long userId;
 
@@ -46,11 +52,13 @@ public class Expense {
   @JoinColumn(name = "id_account", insertable = false, updatable = false)
   private Account account;
 
-  public Expense(String description, String category, double value, LocalDate date, Long userId) {
+  public Expense(String description, String category, double value, LocalDate date, boolean paid_out, Long accountId, Long userId) {
     this.description = description;
     this.category = category;
     this.value = value;
     this.date = date;
+    this.paid_out = paid_out;
+    this.accountId = accountId;
     this.userId = userId;
   }
 }
