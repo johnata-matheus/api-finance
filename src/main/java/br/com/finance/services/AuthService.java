@@ -95,6 +95,8 @@ public class AuthService {
       if(user.getToken().equals(token) && user.getToken_expiration().isAfter(LocalDateTime.now())){
         String cryptedPassword = new BCryptPasswordEncoder().encode(password);
         user.setPassword(cryptedPassword);
+        user.setToken(null);
+        user.setToken_expiration(null);
         
         return this.userRepository.save(user); 
       }
