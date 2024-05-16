@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.finance.exceptions.ExpenseNotFoundException;
+import br.com.finance.models.Account;
 import br.com.finance.models.Expense;
+import br.com.finance.repositories.AccountRepository;
 import br.com.finance.repositories.ExpenseRepository;
 
 @Service
@@ -15,6 +17,9 @@ public class ExpenseService {
 
   @Autowired
   private ExpenseRepository expenseRepository;
+
+  @Autowired
+  private AccountRepository accountRepository;
 
   public List<Expense> getAllExpenses(){
     List<Expense> expenses = this.expenseRepository.findAll();
@@ -33,6 +38,20 @@ public class ExpenseService {
   }
 
   public Expense createExpense(Expense expense){
+    if(expense.isPaid_out()){
+      Account account = this.accountRepository.findById(expense.getAccountId()).orElse(null);
+      if(account != null){
+        double accountBalance = account.getBalance();
+        double expenseValue = expense.getValue();
+        account.setBalance(accountBalance - expenseValue);
+
+        this.accountRepository.save(account);
+      }
+
+      return this.expenseRepository.save(expense);
+    }
+
+
     return this.expenseRepository.save(expense);
   }
 
