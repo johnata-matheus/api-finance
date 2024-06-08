@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.finance.exceptions.ExpenseNotFoundException;
+import br.com.finance.exceptions.UserNotFoundException;
 import br.com.finance.models.Account;
 import br.com.finance.models.Expense;
 import br.com.finance.repositories.AccountRepository;
 import br.com.finance.repositories.ExpenseRepository;
+import br.com.finance.repositories.UserRepository;
 
 @Service
 public class ExpenseService {
@@ -20,6 +22,9 @@ public class ExpenseService {
 
   @Autowired
   private AccountRepository accountRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   public List<Expense> getAllExpenses(){
     List<Expense> expenses = this.expenseRepository.findAll();
@@ -37,20 +42,20 @@ public class ExpenseService {
     return this.expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException());
   }
 
-  public Expense createExpense(Expense expense){
+  public Expense createExpense(Expense expense, Long id){
+    this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+    expense.setUserId(id);
+
     if(expense.isPaid_out()){
-      Account account = this.accountRepository.findById(expense.getAccountId()).orElse(null);
-      if(account != null){
-        double accountBalance = account.getBalance();
-        double expenseValue = expense.getValue();
-        account.setBalance(accountBalance - expenseValue);
-
-        this.accountRepository.save(account);
-      }
-
+      Account account = this.accountRepository.findById(expense.getAccountId()).orElseThrow(() -> new ExpenseNotFoundException());
+      
+      double accountBalance = account.getBalance();
+      double expenseValue = expense.getValue();
+      account.setBalance(accountBalance - expenseValue);
+      this.accountRepository.save(account);
+      
       return this.expenseRepository.save(expense);
     }
-
 
     return this.expenseRepository.save(expense);
   }
@@ -65,6 +70,7 @@ public class ExpenseService {
       expenseToUpdate.setValue(expense.getValue());
       expenseToUpdate.setDate(expense.getDate());
       expenseToUpdate.setUser(expense.getUser());
+      expenseToUpdate.setPaid_out(expense.isPaid_out());
 
       return this.expenseRepository.save(expenseToUpdate);
     } 
