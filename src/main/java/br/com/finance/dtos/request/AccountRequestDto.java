@@ -8,7 +8,7 @@ public record AccountRequestDto(
   @NotNull @NotBlank String type,
   @NotNull double balance,
   @NotNull @NotBlank String title,
-  @NotNull Long id_user
+  Long id_user
 ) {
 
   public Account toAccount(){
