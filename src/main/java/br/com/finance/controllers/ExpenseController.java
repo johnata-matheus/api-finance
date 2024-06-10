@@ -29,14 +29,6 @@ public class ExpenseController {
 
   @Autowired
   private ExpenseService expenseService;
-  
-  // @GetMapping
-  // public ResponseEntity<List<ExpenseResponseDto>> getAllExpenses(){
-  //   List<Expense> expenses = this.expenseService.getAllExpenses();
-  //   List<ExpenseResponseDto> expensesDto = expenses.stream().map(ExpenseResponseDto::new).toList();
-   
-  //   return ResponseEntity.ok().body(expensesDto);
-  // }
 
   @GetMapping
   public ResponseEntity<List<ExpenseResponseDto>> getExpensesByUserAuthenticated() {
@@ -63,9 +55,17 @@ public class ExpenseController {
  
   @PostMapping
   public ResponseEntity<ExpenseResponseDto> createExpense(@RequestBody @Valid ExpenseRequestDto expenseRequestDto){
-    var expense = this.expenseService.createExpense(expenseRequestDto.toExpense());
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     
-    return ResponseEntity.status(HttpStatus.CREATED).body(new ExpenseResponseDto(expense));
+    if(authentication != null && authentication.getPrincipal() instanceof User){
+      User user = (User) authentication.getPrincipal();
+      Long idUser = user.getId();
+      var expense = this.expenseService.createExpense(expenseRequestDto.toExpense(), idUser);
+
+      return ResponseEntity.status(HttpStatus.CREATED).body(new ExpenseResponseDto(expense));
+    }
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 
   @PutMapping("/{id}")
