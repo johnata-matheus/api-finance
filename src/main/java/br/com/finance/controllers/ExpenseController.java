@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.finance.dtos.request.ExpenseRequestDto;
 import br.com.finance.dtos.response.ExpenseResponseDto;
+import br.com.finance.dtos.response.TotalExpenseResponseDto;
+import br.com.finance.dtos.response.ExpensePercentageResponseDto;
 import br.com.finance.models.Expense;
 import br.com.finance.models.User;
 import br.com.finance.services.ExpenseService;
@@ -29,6 +32,21 @@ public class ExpenseController {
 
   @Autowired
   private ExpenseService expenseService;
+
+  @GetMapping("/percentage")
+  public ResponseEntity<ExpensePercentageResponseDto> getExpensePercentage(@RequestParam int yearCurrent, int monthCurrent, int year, int month) {
+    int expense = this.expenseService.getExpensePercentage(yearCurrent, monthCurrent, year, month);
+     
+    return ResponseEntity.ok().body(new ExpensePercentageResponseDto(expense));
+  }
+
+  @GetMapping("/month")
+  public ResponseEntity<List<TotalExpenseResponseDto>> getTotalExpenses(@RequestParam int year, int month) {
+    List<Object[]> expenses = this.expenseService.getValueExpenseMonth(year, month);
+    List<TotalExpenseResponseDto> responseDto = expenses.stream().map(expense -> new TotalExpenseResponseDto((int) expense[0], (int) expense[1], (int) expense[2], (double) expense[3])).toList();
+
+    return ResponseEntity.ok().body(responseDto);
+  }
 
   @GetMapping
   public ResponseEntity<List<ExpenseResponseDto>> getExpensesByUserAuthenticated() {
@@ -47,10 +65,9 @@ public class ExpenseController {
 
   @GetMapping("/{id}")
   public ResponseEntity<ExpenseResponseDto> getExpenseById(@PathVariable(value = "id") Long id){
-      var expense = this.expenseService.findExpenseById(id);
-      var expenseResponseDto = new ExpenseResponseDto(expense);
+    var expense = this.expenseService.findExpenseById(id);
 
-      return ResponseEntity.ok().body(expenseResponseDto);
+    return ResponseEntity.ok().body(new ExpenseResponseDto(expense));
   }
  
   @PostMapping
