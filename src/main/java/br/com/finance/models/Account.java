@@ -1,5 +1,6 @@
 package br.com.finance.models;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,7 +33,7 @@ public class Account {
   private String type;
 
   @Column(nullable = false)
-  private double balance;
+  private BigDecimal balance;
 
   private String title;
   
@@ -48,7 +49,7 @@ public class Account {
   @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Expense> expense;
 
-  public Account(String type, double balance, String title, Long id_user){
+  public Account(String type, BigDecimal balance, String title, Long id_user){
     this.type = type;
     this.balance = balance;
     this.title = title;

@@ -1,5 +1,6 @@
 package br.com.finance.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -27,7 +28,7 @@ public class Expense {
   private String description;
 
   @Column(nullable = false)
-  private double value;
+  private BigDecimal value;
   
   @Column(nullable = false)
   private String category;
@@ -52,7 +53,7 @@ public class Expense {
   @JoinColumn(name = "id_account", insertable = false, updatable = false)
   private Account account;
 
-  public Expense(String description, String category, double value, LocalDate date, boolean paid_out, Long accountId, Long userId) {
+  public Expense(String description, String category, BigDecimal value, LocalDate date, boolean paid_out, Long accountId, Long userId) {
     this.description = description;
     this.category = category;
     this.value = value;
