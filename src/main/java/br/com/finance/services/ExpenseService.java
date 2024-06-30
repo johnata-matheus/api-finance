@@ -1,19 +1,16 @@
 package br.com.finance.services;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.finance.exceptions.ExpenseNotFoundException;
-import br.com.finance.exceptions.UserNotFoundException;
-import br.com.finance.models.Account;
 import br.com.finance.models.Expense;
-import br.com.finance.repositories.AccountRepository;
+import br.com.finance.models.User;
 import br.com.finance.repositories.ExpenseRepository;
-import br.com.finance.repositories.UserRepository;
 
 @Service
 public class ExpenseService {
@@ -22,18 +19,21 @@ public class ExpenseService {
   private ExpenseRepository expenseRepository;
 
   @Autowired
-  private AccountRepository accountRepository;
+  private UserService userService;
 
   @Autowired
-  private UserRepository userRepository;
+  private AccountService accountService;
+
+  @Autowired
+  private BalanceService balanceService;
 
   public List<Object[]> getValueExpenseMonth(int year, int month){
-    return this.expenseRepository.findTotalExpensesPerMonth(year, month);
+    return this.expenseRepository.findAllExpenseValuesFromMonth(year, month);
   }
 
   public int getExpensePercentage(@RequestParam int yearCurrent, int monthCurrent, int year, int month){
-    Integer current = this.expenseRepository.getTotalExpensesByMonth(yearCurrent, monthCurrent).orElse(0);
-    Integer previous = this.expenseRepository.getTotalExpensesByMonth(year, month).orElse(0);
+    Integer current = this.expenseRepository.findTotalExpensesFromMonth(yearCurrent, monthCurrent).orElse(0);
+    Integer previous = this.expenseRepository.findTotalExpensesFromMonth(year, month).orElse(0);
 
     if(previous != 0){
       double difference = current - previous;
@@ -46,11 +46,8 @@ public class ExpenseService {
     return 0; 
   }
   
-
   public List<Expense> getExpenseByUser(Long id){
-    List<Expense> expenses = this.expenseRepository.findExpensesByUserId(id);
-
-    return expenses;
+    return this.expenseRepository.findExpensesByUserId(id);
   }
 
   public Expense findExpenseById(Long id){
@@ -58,29 +55,23 @@ public class ExpenseService {
   }
 
   public Expense createExpense(Expense expense, Long id){
-    this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+    User user = this.userService.findUserById(id);
     expense.setUserId(id);
 
     if(expense.isPaid_out() == true){
-      Account account = this.accountRepository.findById(expense.getAccountId()).orElseThrow(() -> new ExpenseNotFoundException());
-      
-      double accountBalance = account.getBalance();
-      double expenseValue = expense.getValue();
-      account.setBalance(accountBalance - expenseValue);
-      this.accountRepository.save(account);
-      
-      return this.expenseRepository.save(expense);
+      this.accountService.subtractPaidExpenseFromAccountBalance(expense.getAccountId(), expense.getValue());
+      this.balanceService.updateBalance(user.getId(), expense.getValue());
     }
 
     return this.expenseRepository.save(expense);
   }
 
-  public Expense updateExpenseByid(Long id, Expense expense){
-    Expense expenseId = this.expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException());
+  public Expense updateExpenseByid(Long idUser, Long idExpense, Expense expense){
+    Expense expenseId = this.expenseRepository.findById(idExpense).orElseThrow(() -> new ExpenseNotFoundException());
 
-    double ExpenseValue = expenseId.getValue();
-    double newExpenseValue = expense.getValue();
-    double difference = newExpenseValue - ExpenseValue;
+    BigDecimal expenseValue = expenseId.getValue();
+    BigDecimal newExpenseValue = expense.getValue();
+    BigDecimal difference = newExpenseValue.subtract(expenseValue);
 
     expenseId.setDescription(expense.getDescription());
     expenseId.setCategory(expense.getCategory());
@@ -90,24 +81,17 @@ public class ExpenseService {
     expenseId.setPaid_out(expense.isPaid_out());
 
     if(expense.isPaid_out() == true){
-      Account account = this.accountRepository.findById(expense.getAccountId()).orElseThrow(() -> new IllegalArgumentException());
-  
-      double adjustAccountBalance = account.getBalance() - difference;
-      account.setBalance(adjustAccountBalance);
-
-      this.accountRepository.save(account);
+      this.accountService.subtractPaidExpenseFromAccountBalance(expenseId.getAccountId(), difference);
+      this.balanceService.updateBalance(expenseId.getUserId(), difference);
     }
 
     return this.expenseRepository.save(expenseId);
   }
 
   public void deleteExpenseById(Long id){
-    Optional<Expense> expenseId = this.expenseRepository.findById(id);
-    if(expenseId.isPresent()){
-      this.expenseRepository.deleteById(id);
-    } else {
-      throw new ExpenseNotFoundException();
-    }
+    this.expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException());
+    
+    this.expenseRepository.deleteById(id);
   }
-  
+
 }
