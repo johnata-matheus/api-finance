@@ -1,12 +1,14 @@
 package br.com.finance.dtos.request;
 
+import java.math.BigDecimal;
+
 import br.com.finance.models.Account;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record AccountRequestDto(
   @NotNull @NotBlank String type,
-  @NotNull double balance,
+  @NotNull BigDecimal balance,
   @NotNull @NotBlank String title,
   Long id_user
 ) {

@@ -1,11 +1,13 @@
 package br.com.finance.dtos.response;
 
+import java.math.BigDecimal;
+
 import br.com.finance.models.Account;
 
 public record AccountResponseDto(
   Long id,
   String type,
-  double balance,
+  BigDecimal balance,
   String title,
   Long id_user
 ) {

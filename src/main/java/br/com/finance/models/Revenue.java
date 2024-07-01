@@ -1,5 +1,6 @@
 package br.com.finance.models;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -26,7 +27,7 @@ public class Revenue {
   private String description;
 
   @Column(nullable = false)
-  private double value;
+  private BigDecimal value;
 
   @Column(nullable = false)
   private LocalDate date;
@@ -35,7 +36,7 @@ public class Revenue {
   @JoinColumn(name = "id_user")
   private User user;
 
-  public Revenue(String description, double value, LocalDate date, User user){
+  public Revenue(String description, BigDecimal value, LocalDate date, User user){
     this.description = description;
     this.value = value;
     this.date = date;
