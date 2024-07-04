@@ -49,7 +49,7 @@ public class Expense {
   @JoinColumn(name = "id_user", insertable = false, updatable = false)
   private User user;
 
-  @ManyToOne
+  @ManyToOne(optional = true)
   @JoinColumn(name = "id_account", insertable = false, updatable = false)
   private Account account;
 
