@@ -1,4 +1,4 @@
-package br.com.finance.exceptions;
+package br.com.finance.exceptions.revenue;
 
 public class RevenueNotFoundException extends RuntimeException {
   

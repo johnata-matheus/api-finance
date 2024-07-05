@@ -1,4 +1,4 @@
-package br.com.finance.exceptions;
+package br.com.finance.exceptions.expense;
 
 public class ExpenseNotFoundException extends RuntimeException{
   
