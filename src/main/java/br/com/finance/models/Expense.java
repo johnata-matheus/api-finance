@@ -2,6 +2,9 @@ package br.com.finance.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,6 +55,9 @@ public class Expense {
   @ManyToOne(optional = true)
   @JoinColumn(name = "id_account", insertable = false, updatable = false)
   private Account account;
+
+  @CreationTimestamp
+  private LocalDateTime created_at;
 
   public Expense(String description, String category, BigDecimal value, LocalDate date, boolean paid_out, Long accountId, Long userId) {
     this.description = description;
