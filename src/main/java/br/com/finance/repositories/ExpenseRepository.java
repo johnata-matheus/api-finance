@@ -12,9 +12,10 @@ import br.com.finance.models.Expense;
 @Repository
 public interface ExpenseRepository extends JpaRepository <Expense, Long>{
   
-  List<Expense> findExpensesByUserId(Long idUsuario);
+  @Query(value = "SELECT e FROM Expense e WHERE e.userId = :id ORDER BY e.created_at DESC")
+  List<Expense> findAllExpensesByUserId(Long id);
 
-  @Query(value = "SELECT YEAR(e.date), MONTH(e.date), DAY(e.date), SUM(e.value) FROM Expense e WHERE e.userId = :id AND YEAR(e.date) = :year AND MONTH(e.date) = :month GROUP BY YEAR(e.date), MONTH(e.date), DAY(e.date) ORDER BY YEAR(e.date), MONTH(e.date), DAY(e.date)")
+  @Query(value = "SELECT YEAR(e.date), MONTH(e.date), DAY(e.date), SUM(e.value) FROM Expense e WHERE e.userId = :id AND YEAR(e.date) = :year AND MONTH(e.date) = :month GROUP BY e.date ORDER BY e.date")
   List<Object[]> findAllExpenseValuesFromMonth(Long id, int year, int month);
 
   @Query("SELECT SUM(e.value) FROM Expense e WHERE e.userId = :id AND YEAR(e.date) = :year AND MONTH(e.date) = :month")

@@ -12,9 +12,12 @@ import br.com.finance.models.Revenue;
 @Repository
 public interface RevenueRepository extends JpaRepository<Revenue, Long>{
 
-  @Query(value = "SELECT YEAR(r.date), MONTH(r.date), DAY(r.date), SUM(r.value) FROM Revenue r WHERE YEAR(r.date) = :year AND MONTH(r.date) = :month GROUP BY YEAR(r.date), MONTH(r.date), DAY(r.date)")
-  List<Object[]> findAllRevenueValuesFromMonth(int year, int month);
+  @Query(value = "SELECT r FROM Revenue r WHERE r.userId = :id ORDER BY r.date DESC")
+  List<Revenue> findAllRevenuesByUser(Long id);
 
-  @Query(value = "SELECT SUM(r.value) FROM Revenue r WHERE YEAR(r.date) = :year AND MONTH(r.date) = :month")
-  Optional<Integer> findTotalRevenuesFromMonth(int year, int month);
+  @Query(value = "SELECT YEAR(r.date), MONTH(r.date), DAY(r.date), SUM(r.value) FROM Revenue r WHERE r.userId = :id AND YEAR(r.date) = :year AND MONTH(r.date) = :month GROUP BY r.date ORDER BY r.date DESC")
+  List<Object[]> findAllRevenueValuesFromMonth(Long id, int year, int month);
+
+  @Query(value = "SELECT SUM(r.value) FROM Revenue r WHERE r.userId = :id AND YEAR(r.date) = :year AND MONTH(r.date) = :month")
+  Optional<Integer> findTotalRevenuesFromMonth(Long id, int year, int month);
 }
