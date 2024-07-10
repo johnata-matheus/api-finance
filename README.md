@@ -7,6 +7,10 @@
 
 Este projeto se trata de uma API de finanças. A mesma foi construída utilizando as tecnologias: Java, Java Spring, Spring MVC, Spring Data JPA, Spring Security, JWT, MYSQL e Docker.
 
+## Diagrama ER
+
+![image](https://github.com/johnata-matheus/api-finance/assets/105123252/85275a75-b147-4949-8078-577e84612c79)
+
 ## Requisitos
 
 Para rodar esse projeto você precisará do Docker.
