@@ -93,7 +93,7 @@ public class ExpenseController {
         return ResponseEntity.ok().body(new ExpenseResponseDto(expense));
       }
       
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -131,8 +131,22 @@ public class ExpenseController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<Object> deleteExpense(@PathVariable(value = "id") Long id){
-    this.expenseService.deleteExpenseById(id);
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    
+    if(authentication != null && authentication.getPrincipal() instanceof User){
+      User user = (User) authentication.getPrincipal();
+      Long userId = user.getId();
 
-    return ResponseEntity.noContent().build();
+      var expense = this.expenseService.findExpenseById(id);
+      
+      if(expense != null && expense.getUserId().equals(userId)){
+        this.expenseService.deleteExpenseById(id);
+        return ResponseEntity.noContent().build();
+      }
+      
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 }
