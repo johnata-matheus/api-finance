@@ -24,6 +24,7 @@ public class Revenue {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+  
   private String description;
 
   @Column(nullable = false)
@@ -32,14 +33,17 @@ public class Revenue {
   @Column(nullable = false)
   private LocalDate date;
 
+  @Column(name = "id_user")
+  private Long userId;
+
   @ManyToOne
-  @JoinColumn(name = "id_user")
+  @JoinColumn(name = "id_user", insertable = false, updatable = false)
   private User user;
 
-  public Revenue(String description, BigDecimal value, LocalDate date, User user){
+  public Revenue(String description, BigDecimal value, LocalDate date, Long userId){
     this.description = description;
     this.value = value;
     this.date = date;
-    this.user = user;
+    this.userId = userId;
   }
 }
