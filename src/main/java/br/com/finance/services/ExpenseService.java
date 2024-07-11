@@ -95,16 +95,23 @@ public class ExpenseService {
         } 
         else {
           this.accountService.subtractPaidExpenseFromAccount(newAccountId, difference);
-
-          if(!expenseToUpdate.isPaid_out()){
-            this.accountService.subtractPaidExpenseFromAccount(newAccountId, newExpenseValue);
-          }
         } 
       } else if(newAccountId != null){
         this.accountService.subtractPaidExpenseFromAccount(newAccountId, newExpenseValue);
       }
+      if (!expenseToUpdate.isPaid_out()) {
+        this.balanceService.subtractPaidExpenseFromBalance(expenseToUpdate.getUserId(), newExpenseValue);
+      } else {
+        this.balanceService.subtractPaidExpenseFromBalance(expenseToUpdate.getUserId(), difference);
+      }
       
-      this.balanceService.subtractPaidExpenseFromBalance(expenseToUpdate.getUserId(), difference);
+    } else {
+      if (expenseToUpdate.isPaid_out()) {
+          if (oldAccountId != null) {
+              this.accountService.addPaidExpenseToAccount(oldAccountId, expenseValue);
+          }
+          this.balanceService.addPaidExpenseToBalance(expenseToUpdate.getUserId(), expenseValue);
+      }
     }
     
     expenseToUpdate.setAccountId(expense.getAccountId());
@@ -117,10 +124,11 @@ public class ExpenseService {
     Expense expenseToDelete = this.expenseRepository.findById(id).orElseThrow(() -> new ExpenseNotFoundException());
 
     if(expenseToDelete.isPaid_out()){
-      this.accountService.addPaidExpenseToAccount(expenseToDelete.getAccountId(), expenseToDelete.getValue());
+      if(expenseToDelete.getAccountId() != null){
+        this.accountService.addPaidExpenseToAccount(expenseToDelete.getAccountId(), expenseToDelete.getValue());
+      }
+      this.balanceService.addPaidExpenseToBalance(expenseToDelete.getUserId(), expenseToDelete.getValue());
     } 
-
-    this.balanceService.addPaidExpenseToBalance(expenseToDelete.getUserId(), expenseToDelete.getValue());
 
     this.expenseRepository.deleteById(id);
   }
