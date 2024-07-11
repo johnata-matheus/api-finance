@@ -53,7 +53,6 @@ public class AccountController {
     return ResponseEntity.ok().body(accountResponseDto);
   }
  
-
   @PostMapping
   public ResponseEntity<AccountResponseDto> createAccount(@RequestBody @Valid AccountRequestDto request){
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,8 +74,8 @@ public class AccountController {
     User user = (User) authentication.getPrincipal();
     Long userId = user.getId();
     
-     try {
-        Account accountUpdate = this.accountService.updateAccount(id, userId, accountRequestDto.toAccount()); 
+    try {
+        Account accountUpdate = this.accountService.updateAccount(userId, accountRequestDto.toAccount()); 
         return ResponseEntity.ok().body(new AccountResponseDto(accountUpdate));
     } catch (IllegalArgumentException e) {
         return ResponseEntity.notFound().build();
