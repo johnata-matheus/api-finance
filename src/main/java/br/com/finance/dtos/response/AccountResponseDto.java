@@ -13,7 +13,7 @@ public record AccountResponseDto(
 ) {
 
   public AccountResponseDto(Account account){
-    this(account.getId(), account.getType(), account.getBalance(), account.getTitle(), account.getId_user());
+    this(account.getId(), account.getType(), account.getBalance(), account.getTitle(), account.getUserId());
   }
 
 }
