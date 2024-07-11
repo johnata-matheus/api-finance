@@ -1,14 +1,14 @@
 package br.com.finance.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.finance.dtos.request.UserRequestDto;
-import br.com.finance.exceptions.UserNotFoundException;
+import br.com.finance.exceptions.user.UserNotExistsException;
+import br.com.finance.exceptions.user.UserNotFoundException;
 import br.com.finance.models.User;
 import br.com.finance.repositories.UserRepository;
 
@@ -23,34 +23,26 @@ public class UserService {
   }
   
   public User findUserById(Long id){
-    return this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+    return this.userRepository.findById(id).orElseThrow(() -> new UserNotExistsException());
   }
 
   public User updateUserByid(Long id, UserRequestDto userRequestDto){
-    Optional<User> userId = this.userRepository.findById(id);
-    if(userId.isPresent()){
-      User userToUpdate = userId.get();
+    User userToUpdate = this.userRepository.findById(id).orElseThrow(() -> new UserNotExistsException());
 
-      String passwordEncrypted = new BCryptPasswordEncoder().encode(userRequestDto.password());
-      
-      userToUpdate.setName(userRequestDto.name());
-      userToUpdate.setEmail(userRequestDto.email());
-      userToUpdate.setPassword(passwordEncrypted);
-      userToUpdate.setRole(userRequestDto.role());
+    String passwordEncrypted = new BCryptPasswordEncoder().encode(userRequestDto.password());
+  
+    userToUpdate.setName(userRequestDto.name());
+    userToUpdate.setEmail(userRequestDto.email());
+    userToUpdate.setPassword(passwordEncrypted);
+    userToUpdate.setRole(userRequestDto.role());
 
-      return this.userRepository.save(userToUpdate);
-    } 
-
-    throw new UserNotFoundException();
+    return this.userRepository.save(userToUpdate);
   }
 
   public void deleteUserById(Long id){
-    Optional<User> userId = this.userRepository.findById(id);
-    if(userId.isPresent()){
-      this.userRepository.deleteById(id);
-    } else {
-      throw new UserNotFoundException();
-    }
+    this.userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+
+    this.userRepository.deleteById(id);
   }
   
 }
