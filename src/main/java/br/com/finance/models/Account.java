@@ -38,7 +38,7 @@ public class Account {
   private String title;
   
   @Column(nullable = false)
-  private Long id_user;
+  private Long userId;
 
   @ManyToOne
   @JsonIgnore
@@ -53,6 +53,6 @@ public class Account {
     this.type = type;
     this.balance = balance;
     this.title = title;
-    this.id_user = id_user;
+    this.userId = id_user;
   }
 }
