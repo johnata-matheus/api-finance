@@ -37,7 +37,7 @@ public class Account {
 
   private String title;
   
-  @Column(nullable = false)
+  @Column(name = "id_user", nullable = false)
   private Long userId;
 
   @ManyToOne
