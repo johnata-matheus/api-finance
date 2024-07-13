@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.finance.dtos.request.RevenueRequestDto;
 import br.com.finance.dtos.response.PercentageResponseDto;
 import br.com.finance.dtos.response.RevenueResponseDto;
-import br.com.finance.dtos.response.TotalValueResponseDto;
+import br.com.finance.dtos.response.ValueResponseDto;
 import br.com.finance.models.Revenue;
 import br.com.finance.models.User;
 import br.com.finance.services.RevenueService;
@@ -35,14 +35,14 @@ public class RevenueController {
   private RevenueService revenueService;
 
   @GetMapping("/month")
-  public ResponseEntity<List<TotalValueResponseDto>> getTotalRevenue(@RequestParam int year, int month){
+  public ResponseEntity<List<ValueResponseDto>> getTotalRevenueFromMonth(@RequestParam int year, int month){
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if(authentication != null && authentication.getPrincipal() instanceof User){
       User user = (User) authentication.getPrincipal();
       Long userId = user.getId();
       List<Object[]> revenues = this.revenueService.getValueRevenueMonth(userId, year, month);
-      List<TotalValueResponseDto> responseDto = revenues.stream().map((revenue) -> new TotalValueResponseDto((int) revenue[0], (int) revenue[1], (int) revenue[2], (BigDecimal) revenue[3])).toList();
+      List<ValueResponseDto> responseDto = revenues.stream().map((revenue) -> new ValueResponseDto((int) revenue[0], (int) revenue[1], (int) revenue[2], (BigDecimal) revenue[3])).toList();
 
       return ResponseEntity.ok().body(responseDto);
     }
