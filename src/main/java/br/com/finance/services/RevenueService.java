@@ -18,6 +18,10 @@ public class RevenueService {
   @Autowired
   private UserService userService;
 
+  public Integer getTotalRevenueFromMonth(Long id, int year, int month){
+    return this.revenueRepository.findTotalRevenuesFromMonth(id, year, month).orElse(0);
+  }
+
   public List<Object[]> getValueRevenueMonth(Long id, int year, int month){
     return this.revenueRepository.findAllRevenueValuesFromMonth(id, year, month);
   }

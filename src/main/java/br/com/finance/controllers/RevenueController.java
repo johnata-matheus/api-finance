@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.finance.dtos.request.RevenueRequestDto;
 import br.com.finance.dtos.response.PercentageResponseDto;
 import br.com.finance.dtos.response.RevenueResponseDto;
+import br.com.finance.dtos.response.TotalMonthValueResponseDto;
 import br.com.finance.dtos.response.ValueResponseDto;
 import br.com.finance.models.Revenue;
 import br.com.finance.models.User;
@@ -33,6 +34,21 @@ public class RevenueController {
 
   @Autowired
   private RevenueService revenueService;
+
+  @GetMapping("/value-month")
+  public ResponseEntity<TotalMonthValueResponseDto> getTotalExpenseFromMonth(@RequestParam int year, int month){
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if(authentication != null && authentication.getPrincipal() instanceof User){
+      User user = (User) authentication.getPrincipal();
+      Long userId = user.getId();
+
+      Integer revenueValue = this.revenueService.getTotalRevenueFromMonth(userId, year, month);
+      return ResponseEntity.ok().body(new TotalMonthValueResponseDto(revenueValue));
+    }
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+  } 
 
   @GetMapping("/month")
   public ResponseEntity<List<ValueResponseDto>> getTotalRevenueFromMonth(@RequestParam int year, int month){
