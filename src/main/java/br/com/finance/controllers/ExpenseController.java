@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.finance.dtos.request.ExpenseRequestDto;
 import br.com.finance.dtos.response.ExpenseResponseDto;
 import br.com.finance.dtos.response.PercentageResponseDto;
-import br.com.finance.dtos.response.TotalValueResponseDto;
+import br.com.finance.dtos.response.TotalMonthValueResponseDto;
+import br.com.finance.dtos.response.ValueResponseDto;
 import br.com.finance.models.Expense;
 import br.com.finance.models.User;
 import br.com.finance.services.ExpenseService;
@@ -34,15 +35,30 @@ public class ExpenseController {
   @Autowired
   private ExpenseService expenseService;
 
-  @GetMapping("/month")
-  public ResponseEntity<List<TotalValueResponseDto>> getTotalExpenses(@RequestParam int year, int month) {
+  @GetMapping("/value-month")
+  public ResponseEntity<TotalMonthValueResponseDto> getTotalExpenseFromMonth(@RequestParam int year, int month){
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     if(authentication != null && authentication.getPrincipal() instanceof User){
       User user = (User) authentication.getPrincipal();
       Long userId = user.getId();
-      List<Object[]> expenses = this.expenseService.getValueExpenseMonth(userId, year, month);
-      List<TotalValueResponseDto> responseDto = expenses.stream().map(expense -> new TotalValueResponseDto((int) expense[0], (int) expense[1], (int) expense[2], (BigDecimal) expense[3])).toList();
+
+      Integer expenseValue = this.expenseService.getTotalExpenseFromMonth(userId, year, month);
+      return ResponseEntity.ok().body(new TotalMonthValueResponseDto(expenseValue));
+    }
+
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+  } 
+
+  @GetMapping("/month")
+  public ResponseEntity<List<ValueResponseDto>> getAllExpensesValueFromMonth(@RequestParam int year, int month) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if(authentication != null && authentication.getPrincipal() instanceof User){
+      User user = (User) authentication.getPrincipal();
+      Long userId = user.getId();
+      List<Object[]> expenses = this.expenseService.getAllValueExpenseMonth(userId, year, month);
+      List<ValueResponseDto> responseDto = expenses.stream().map(expense -> new ValueResponseDto((int) expense[0], (int) expense[1], (int) expense[2], (BigDecimal) expense[3])).toList();
 
       return ResponseEntity.ok().body(responseDto);
     }
@@ -65,7 +81,7 @@ public class ExpenseController {
   }
 
   @GetMapping
-  public ResponseEntity<List<ExpenseResponseDto>> getExpensesByUserAuthenticated() {
+  public ResponseEntity<List<ExpenseResponseDto>> getExpensesByUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
       
     if (authentication != null && authentication.getPrincipal() instanceof User){
