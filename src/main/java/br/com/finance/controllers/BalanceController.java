@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.finance.dtos.response.BalanceResponseDto;
 import br.com.finance.models.Balance;
 import br.com.finance.models.User;
 import br.com.finance.services.BalanceService;
@@ -21,7 +22,7 @@ public class BalanceController {
   private BalanceService balanceService;
 
   @GetMapping
-  public ResponseEntity<Balance> getUserBalance(){
+  public ResponseEntity<BalanceResponseDto> getUserBalance(){
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); 
     
     if(authentication != null && authentication.getPrincipal() instanceof User){
@@ -29,7 +30,7 @@ public class BalanceController {
       Long userId = user.getId();
 
       Balance balance = this.balanceService.findBalanceById(userId);
-      return ResponseEntity.ok().body(balance);
+      return ResponseEntity.ok().body(new BalanceResponseDto(balance));
     }
 
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
