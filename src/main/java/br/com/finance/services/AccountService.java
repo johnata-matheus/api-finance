@@ -6,10 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.finance.exceptions.expense.ExpenseNotFoundException;
+import br.com.finance.exceptions.accounts.AccountNotfoundException;
 import br.com.finance.models.Account;
 import br.com.finance.repositories.AccountRepository;
-import br.com.finance.repositories.UserRepository;
 
 @Service
 public class AccountService {
@@ -18,35 +17,37 @@ public class AccountService {
   private AccountRepository accountRepository;
 
   @Autowired
-  private UserRepository userRepository;
+  private UserService userService;
 
   public List<Account> getAccountsByUser(Long id){
+    this.userService.findUserById(id);
+
     return this.accountRepository.findAccountsByUserId(id);
   }
 
   public Account findAccountById(Long id){
-    return this.accountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("conta nao encontrada!"));
+    return this.accountRepository.findById(id).orElseThrow(() -> new AccountNotfoundException());
   }
 
   public Account createAccount(Account account, Long id){
-    this.userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Id do usuario invalido!"));
+    this.userService.findUserById(id);
     account.setUserId(id);
 
     return this.accountRepository.save(account);
   }
 
-  public Account updateAccount(Long userId, Account account){
-    Account accountUpdate = this.accountRepository.findById(account.getId()).orElseThrow(() -> new IllegalArgumentException("Conta nao encontrada!"));
+  public Account updateAccount(Long userId, Long idAccount, Account account){
+    Account accountToUpdate = this.accountRepository.findById(idAccount).orElseThrow(() -> new AccountNotfoundException());
 
-    accountUpdate.setType(account.getType());
-    accountUpdate.setBalance(account.getBalance());
-    accountUpdate.setTitle(account.getTitle());
+    accountToUpdate.setType(account.getType());
+    accountToUpdate.setBalance(account.getBalance());
+    accountToUpdate.setTitle(account.getTitle());
 
-    return this.accountRepository.save(accountUpdate);
+    return this.accountRepository.save(accountToUpdate);
   }
 
   public Account subtractPaidExpenseFromAccount(Long idAccount, BigDecimal expenseValue){
-    Account accountToUpdate = this.accountRepository.findById(idAccount).orElseThrow(() -> new ExpenseNotFoundException());
+    Account accountToUpdate = this.accountRepository.findById(idAccount).orElseThrow(() -> new AccountNotfoundException());
     
     BigDecimal accountBalance = accountToUpdate.getBalance();
     accountToUpdate.setBalance(accountBalance.subtract(expenseValue));
@@ -55,7 +56,7 @@ public class AccountService {
   }
 
   public Account addPaidExpenseToAccount(Long idAccount, BigDecimal expenseValue) {
-    Account accountToUpdate = this.accountRepository.findById(idAccount).orElseThrow(() -> new IllegalArgumentException());
+    Account accountToUpdate = this.accountRepository.findById(idAccount).orElseThrow(() -> new AccountNotfoundException());
 
     BigDecimal accountBalance = accountToUpdate.getBalance();
     accountToUpdate.setBalance(accountBalance.add(expenseValue));
@@ -65,7 +66,7 @@ public class AccountService {
 
 
   public void deleteAccount(Long id){
-    this.accountRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada!"));
+    this.accountRepository.findById(id).orElseThrow(() -> new AccountNotfoundException());
     
     this.accountRepository.deleteById(id);
   }
