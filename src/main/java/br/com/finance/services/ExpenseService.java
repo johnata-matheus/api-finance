@@ -26,7 +26,11 @@ public class ExpenseService {
   @Autowired
   private BalanceService balanceService;
 
-  public List<Object[]> getValueExpenseMonth(Long id, int year, int month){
+  public Integer getTotalExpenseFromMonth(Long id, int year, int month){
+    return this.expenseRepository.findTotalExpensesFromMonth(id, year, month).orElse(0);
+  }
+
+  public List<Object[]> getAllValueExpenseMonth(Long id, int year, int month){
     return this.expenseRepository.findAllExpenseValuesFromMonth(id, year, month);
   }
 
