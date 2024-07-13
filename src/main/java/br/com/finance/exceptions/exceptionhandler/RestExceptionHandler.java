@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.finance.exceptions.accounts.AccountNotfoundException;
 import br.com.finance.exceptions.expense.ExpenseNotFoundException;
 import br.com.finance.exceptions.revenue.RevenueNotFoundException;
 import br.com.finance.exceptions.user.TokenNotFountException;
@@ -58,6 +59,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(RevenueNotFoundException.class)
   private ResponseEntity<RestErrorMessage> revenueNotFoundHandler(RevenueNotFoundException exception){
     RestErrorMessage responseException = new RestErrorMessage(HttpStatus.NOT_FOUND, "Receita não encontrada");
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseException);
+  }
+
+  @ExceptionHandler(AccountNotfoundException.class)
+  private ResponseEntity<RestErrorMessage> AccountNotFoundHandler(AccountNotfoundException exception){
+    RestErrorMessage responseException = new RestErrorMessage(HttpStatus.NOT_FOUND, "Conta não encontrada");
 
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseException);
   }
