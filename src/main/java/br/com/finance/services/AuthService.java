@@ -11,13 +11,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.com.finance.exceptions.user.TokenNotFountException;
-import br.com.finance.exceptions.user.EmailNotFoundException;
-import br.com.finance.exceptions.user.EmailExistsException;
-import br.com.finance.exceptions.user.UserNotFoundException;
-import br.com.finance.models.User;
+import br.com.finance.domain.user.User;
+import br.com.finance.domain.user.exceptions.EmailExistsException;
+import br.com.finance.domain.user.exceptions.EmailNotFoundException;
+import br.com.finance.domain.user.exceptions.TokenNotFountException;
+import br.com.finance.domain.user.exceptions.UserNotFoundException;
+import br.com.finance.infra.secutiry.TokenService;
 import br.com.finance.repositories.UserRepository;
-import br.com.finance.secutiry.TokenService;
 
 @Service
 public class AuthService {

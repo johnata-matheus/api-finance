@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.finance.domain.user.User;
 import br.com.finance.dtos.request.AuthenticationDto;
 import br.com.finance.dtos.request.ForgotPasswordRequestDto;
 import br.com.finance.dtos.request.RegisterDto;
@@ -18,8 +19,6 @@ import br.com.finance.dtos.request.ValidateRequetDto;
 import br.com.finance.dtos.response.LoginReponseDto;
 import br.com.finance.dtos.response.UserResponseDto;
 import br.com.finance.dtos.response.ValidateReponseDto;
-
-import br.com.finance.models.User;
 import br.com.finance.services.AuthService;
 import jakarta.validation.Valid;
 

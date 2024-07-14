@@ -2,7 +2,7 @@ package br.com.finance.dtos.response;
 
 import java.math.BigDecimal;
 
-import br.com.finance.models.Account;
+import br.com.finance.domain.account.Account;
 
 public record AccountResponseDto(
   Long id,

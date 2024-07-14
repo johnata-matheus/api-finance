@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.finance.exceptions.expense.ExpenseNotFoundException;
-import br.com.finance.models.Expense;
-import br.com.finance.models.User;
+import br.com.finance.domain.expense.Expense;
+import br.com.finance.domain.expense.exceptions.ExpenseNotFoundException;
+import br.com.finance.domain.user.User;
 import br.com.finance.repositories.ExpenseRepository;
 
 @Service

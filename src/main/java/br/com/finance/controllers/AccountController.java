@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.finance.domain.account.Account;
+import br.com.finance.domain.user.User;
 import br.com.finance.dtos.request.AccountRequestDto;
 import br.com.finance.dtos.response.AccountResponseDto;
-import br.com.finance.models.Account;
-import br.com.finance.models.User;
 import br.com.finance.services.AccountService;
 import jakarta.validation.Valid;
 

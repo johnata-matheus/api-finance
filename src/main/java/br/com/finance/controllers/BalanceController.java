@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.finance.domain.balance.Balance;
+import br.com.finance.domain.user.User;
 import br.com.finance.dtos.response.BalanceResponseDto;
-import br.com.finance.models.Balance;
-import br.com.finance.models.User;
 import br.com.finance.services.BalanceService;
 
 @RestController

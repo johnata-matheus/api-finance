@@ -3,7 +3,7 @@ package br.com.finance.dtos.response;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import br.com.finance.models.Revenue;
+import br.com.finance.domain.revenue.Revenue;
 
 public record RevenueResponseDto(Long id, String description, BigDecimal value, LocalDate date, Long user_id) {
 

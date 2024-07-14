@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.finance.domain.user.User;
+import br.com.finance.domain.user.exceptions.UserNotExistsException;
+import br.com.finance.domain.user.exceptions.UserNotFoundException;
 import br.com.finance.dtos.request.UserRequestDto;
-import br.com.finance.exceptions.user.UserNotExistsException;
-import br.com.finance.exceptions.user.UserNotFoundException;
-import br.com.finance.models.User;
 import br.com.finance.repositories.UserRepository;
 
 @Service

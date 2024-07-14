@@ -2,7 +2,7 @@ package br.com.finance.dtos.request;
 
 import java.math.BigDecimal;
 
-import br.com.finance.models.Account;
+import br.com.finance.domain.account.Account;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

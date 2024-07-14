@@ -1,7 +1,7 @@
 package br.com.finance.dtos.request;
 
-import br.com.finance.enums.Role;
-import br.com.finance.models.User;
+import br.com.finance.domain.user.Role;
+import br.com.finance.domain.user.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

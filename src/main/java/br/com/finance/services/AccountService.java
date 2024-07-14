@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.finance.exceptions.accounts.AccountNotfoundException;
-import br.com.finance.models.Account;
+import br.com.finance.domain.account.Account;
+import br.com.finance.domain.account.exceptions.AccountNotfoundException;
 import br.com.finance.repositories.AccountRepository;
 
 @Service

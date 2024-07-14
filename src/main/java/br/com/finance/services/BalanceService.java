@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.finance.models.Balance;
+import br.com.finance.domain.balance.Balance;
 import br.com.finance.repositories.BalanceRepository;
 
 @Service

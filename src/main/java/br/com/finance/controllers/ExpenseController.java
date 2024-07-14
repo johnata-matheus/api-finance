@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.finance.domain.expense.Expense;
+import br.com.finance.domain.user.User;
 import br.com.finance.dtos.request.ExpenseRequestDto;
 import br.com.finance.dtos.response.ExpenseResponseDto;
 import br.com.finance.dtos.response.PercentageResponseDto;
 import br.com.finance.dtos.response.TotalMonthValueResponseDto;
 import br.com.finance.dtos.response.ValueResponseDto;
-import br.com.finance.models.Expense;
-import br.com.finance.models.User;
 import br.com.finance.services.ExpenseService;
 import jakarta.validation.Valid;
 

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.finance.domain.user.User;
 import br.com.finance.dtos.request.UserRequestDto;
 import br.com.finance.dtos.response.UserResponseDto;
-import br.com.finance.models.User;
 import br.com.finance.services.UserService;
 import jakarta.validation.Valid;
 

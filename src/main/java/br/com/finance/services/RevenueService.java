@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.finance.exceptions.revenue.RevenueNotFoundException;
-import br.com.finance.models.Revenue;
+import br.com.finance.domain.revenue.Revenue;
+import br.com.finance.domain.revenue.exceptions.RevenueNotFoundException;
 import br.com.finance.repositories.RevenueRepository;
 
 @Service

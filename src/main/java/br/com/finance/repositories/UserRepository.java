@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 
-import br.com.finance.models.User;
+import br.com.finance.domain.user.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
